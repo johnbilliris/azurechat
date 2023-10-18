@@ -10,6 +10,8 @@ interface Props {}
 
 const ChatInput: FC<Props> = (props) => {
   const { setInput, handleSubmit, isLoading, input } = useChatContext();
+  const DISCLAIMER_TEXT =  process.env.NEXT_PUBLIC_DISCLAIMER_TEXT ?? '';
+  const DISCLAIMER_TEXT_POSITION = process.env.NEXT_PUBLIC_DISCLAIMER_TEXT_POSITION ?? "above";
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const { rows, resetRows, onKeyDown, onKeyUp } = useChatInputDynamicHeight({
@@ -32,12 +34,10 @@ const ChatInput: FC<Props> = (props) => {
       onSubmit={submit}
       className="absolute bottom-0 w-full flex items-center"
     >
-      <div className="grid grid-cols-1 w-full items-center container mx-auto max-w-3xl justify-center h-full gap-2">
-        <div className="container">
-          <p className="text-sm text-muted-foreground">
-            DISCLAIMER: This is a demo app. Do not share any sensitive information.
-          </p>
-        </div>
+      <div className="grid grid-cols-1 w-full items-center container mx-auto max-w-3xl justify-center h-full gap-1">
+        { (DISCLAIMER_TEXT_POSITION === "above") && {DISCLAIMER_TEXT} && (
+          <div className="container" dangerouslySetInnerHTML={{ __html: DISCLAIMER_TEXT}} />
+        )}
         <div className="container mx-auto max-w-4xl relative py-2 flex gap-2 items-end">
           <Textarea
             rows={rows}
@@ -64,9 +64,11 @@ const ChatInput: FC<Props> = (props) => {
               )}
             </Button>
           </div>
-        </div>      
+        </div>
+        { (DISCLAIMER_TEXT_POSITION === "below") && {DISCLAIMER_TEXT} && (
+          <div className="container" dangerouslySetInnerHTML={{ __html: DISCLAIMER_TEXT}} />
+        )}  
       </div>
-
     </form>
   );
 };
